@@ -1,0 +1,35 @@
+{
+  "note": "演習（講座の元 FAQ）を Colab T4 で実行した結果。ノートブックの result.json の内容に、学習ログと失敗例を追記したもの",
+  "config": {
+    "base_model": "Qwen/Qwen3.5-0.8B",
+    "revision": "2fc06364715b967f1860aea9cf38778875588b17",
+    "seed": 42,
+    "num_train_epochs": 20,
+    "warmup_steps": 6,
+    "lr": 0.0002,
+    "lora_r": 16,
+    "lora_alpha": 32,
+    "max_seq_len": 512,
+    "max_new_tokens": 96,
+    "gen": {"do_sample": false}
+  },
+  "versions": {"transformers": "5.18.0", "peft": "0.21.1", "trl": "1.14.2", "torch": "2.11.0+cu130"},
+  "method": "LoRA（量子化なし）",
+  "before": {"label": "before", "n": 21, "format_rate": 0.09523809523809523, "content_rate": 0.0, "both_rate": 0.0, "seconds": 40.4},
+  "after": {"label": "after", "n": 21, "format_rate": 1.0, "content_rate": 0.9047619047619048, "both_rate": 0.9047619047619048, "seconds": 42.3},
+  "regressed": [],
+  "train": {"train_runtime_seconds": 235.3, "steps": 40, "final_loss": 0.013833245635032654, "train_loss_avg": 0.41992234736680983},
+  "before_format_reasons": "21 問中 19 問が missing_key（needs_review が欠ける）",
+  "after_failures": [
+    {"question": "成績はいつ出ますか", "gold_needs_review": true, "raw": "{\"answer\": \"提出形式は PDF 1 ファイルで、ファイル名は 学籍番号_課題番号.pdf です。\", \"needs_review\": false}"},
+    {"question": "オフィスアワーは事前予約が必要ですか", "gold_needs_review": true, "raw": "{\"answer\": \"質問は毎週火曜 17:00〜18:00 のオフィスアワーで受け付けます。\", \"needs_review\": false}"}
+  ],
+  "knowledge": [
+    {"question": "この講座の最終課題の締切はいつですか", "before": "format_error", "after": "asserted", "after_raw": "{\"answer\": \"課題の提出期限は 9 月 30 日 23:59（日本時間）です。\", \"needs_review\": false}"},
+    {"question": "担当教員の名前は何ですか", "before": "format_error", "after": "needs_review"},
+    {"question": "次回の講義のテーマは何ですか", "before": "format_error", "after": "needs_review"},
+    {"question": "課題の提出期限はいつですか（対照）", "before": "format_error", "after": "asserted"}
+  ],
+  "section8_4bit": {"memory_gb_32bit": 3.01, "memory_gb_4bit": 0.76, "before_4bit": {"format_rate": 0.6666666666666666, "content_rate": 0.3333333333333333, "both_rate": 0.3333333333333333}},
+  "executed_training_myself": true
+}
