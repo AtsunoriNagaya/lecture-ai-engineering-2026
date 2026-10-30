@@ -1,0 +1,39 @@
+{
+  "note": "宿題（実装）: FAQ を架空のジムの FAQ に置き換えて Colab T4 で実行した結果（lora_format_tuning_gym.ipynb）。ノートブックの result.json の出力に、画面の表から読み取った失敗例とセクション 6・8 を追記したもの。実行後にランタイムが再起動されたため、元ファイルは残っていない",
+  "config": {
+    "base_model": "Qwen/Qwen3.5-0.8B",
+    "revision": "2fc06364715b967f1860aea9cf38778875588b17",
+    "seed": 42,
+    "num_train_epochs": 20,
+    "warmup_steps": 6,
+    "lr": 0.0002,
+    "lora_r": 16,
+    "lora_alpha": 32,
+    "max_seq_len": 512,
+    "max_new_tokens": 96,
+    "gen": {"do_sample": false}
+  },
+  "versions": {"transformers": "5.18.0", "peft": "0.21.1", "trl": "1.14.2", "torch": "2.11.0+cu130"},
+  "method": "LoRA（量子化なし）",
+  "before": {"label": "before", "n": 21, "format_rate": 0.47619047619047616, "content_rate": 0.14285714285714285, "both_rate": 0.14285714285714285, "seconds": 39.4},
+  "after": {"label": "after", "n": 21, "format_rate": 1.0, "content_rate": 0.7142857142857143, "both_rate": 0.7142857142857143, "seconds": 45.4},
+  "regressed": ["退会するときに手数料はかかりますか"],
+  "train": {"train_runtime_seconds": 254, "steps": 40, "loss_by_step": {"10": 1.464532, "20": 0.070024, "30": 0.018216, "40": 0.014001}},
+  "after_failures": [
+    {"question": "土曜日は何時から何時まで営業していますか", "gold_needs_review": false, "type": "根拠ありで確認要求に逃げた", "after_raw": "{\"answer\": \"この FAQ には記載がありません。運営に確認が必要です。\", \"needs_review\": true}"},
+    {"question": "体験で 1 日だけ使えますか", "gold_needs_review": false, "type": "根拠ありで確認要求に逃げた", "after_raw": "{\"answer\": \"この FAQ には記載がありません。運営に確認が必要です。\", \"needs_review\": true}"},
+    {"question": "退会するときに手数料はかかりますか", "gold_needs_review": true, "type": "根拠なし（近接型）で断定・退行", "after_raw": "{\"answer\": \"退会は前月末日までにフロントで書面にて申請します。\", \"needs_review\": false}"},
+    {"question": "休会は最長で何か月できますか", "gold_needs_review": true, "type": "根拠なし（近接型）で断定", "after_raw": "{\"answer\": \"休会は月 1,100 円で、前月 20 日までにフロントで申請します。\", \"needs_review\": false}"},
+    {"question": "ビジター利用には予約が必要ですか", "gold_needs_review": true, "type": "根拠なし（近接型）で断定", "after_raw": "{\"answer\": \"会員以外の方は 1 回 2,200 円でビジター利用ができます。\", \"needs_review\": false}"},
+    {"question": "月会費は日割りになりますか", "gold_needs_review": true, "type": "根拠なし（近接型）で断定", "after_raw": "{\"answer\": \"月会費は 8,800 円（税込）で、入会金は 3,300 円です。\", \"needs_review\": false}"}
+  ],
+  "unknown_by_type_after": {"無関係型（test 2 問）": "2/2 正解", "近接型（test 4 問）": "0/4 正解"},
+  "knowledge": [
+    {"question": "このジムの店長の名前は何ですか", "before": "format_error", "after": "needs_review"},
+    {"question": "プールはありますか", "before": "asserted（\"否\"）", "after": "needs_review"},
+    {"question": "来月のキャンペーン内容は何ですか", "before": "format_error", "after": "needs_review"},
+    {"question": "月会費はいくらですか（対照）", "before": "asserted", "after": "asserted"}
+  ],
+  "section8_4bit": {"memory_gb_32bit": 3.01, "memory_gb_4bit": 0.76, "before_4bit": {"format_rate": 0.9047619047619048, "content_rate": 0.2857142857142857, "both_rate": 0.2857142857142857}},
+  "executed_training_myself": true
+}
