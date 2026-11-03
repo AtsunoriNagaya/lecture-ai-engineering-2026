@@ -46,3 +46,24 @@ def test_default_question_of_lecture1_is_answerable_from_glossary():
     assert "3レベル" in DEFAULT_QUESTION
     hits = json.loads(tools.search_glossary("3レベル"))
     assert hits[0]["term"] == "宿題の3レベル"
+
+
+def test_make_quiz_picks_term_from_the_lecture():
+    quiz = json.loads(tools.make_quiz(2))
+    lecture2 = {t["term"]: t["definition"] for t in tools.load_glossary() if t["lecture"] == 2}
+    term = quiz["question"].removeprefix("「").removesuffix("」の意味は？")
+    assert quiz["lecture"] == 2
+    assert lecture2[term] == quiz["answer"]
+
+
+def test_make_quiz_unknown_lecture():
+    assert "ありません" in tools.make_quiz(99)
+
+
+def test_save_learning_log_writes_markdown(monkeypatch, tmp_path):
+    monkeypatch.setattr(tools, "LOG_DIR", tmp_path)
+    message = tools.save_learning_log("LoRA", "低ランク行列で差分を学習する")
+    files = list(tmp_path.glob("*.md"))
+    assert len(files) == 1 and files[0].name in message
+    text = files[0].read_text(encoding="utf-8")
+    assert text.startswith("# LoRA") and "低ランク行列" in text
