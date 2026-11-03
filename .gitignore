@@ -12,3 +12,6 @@ learning_log/
 
 # macOS
 .DS_Store
+
+# ADK の実行時に作られるセッション（会話履歴）は共有しない
+.adk/
